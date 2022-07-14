@@ -1,8 +1,19 @@
-import { FC, useState, useEffect, useRef, KeyboardEvent } from 'react'
+import {
+  FC,
+  useState,
+  useEffect,
+  useRef,
+  KeyboardEvent,
+  RefObject,
+} from 'react'
 import * as S from './PromptInput.styled'
 import { useShell } from '../../ui/context'
 
-const PromptInput: FC = () => {
+interface Props {
+  containerRef: RefObject<HTMLDivElement>
+}
+
+const PromptInput: FC<Props> = ({ containerRef }) => {
   const [value, setValue] = useState<string>('')
   const [commandIndex, setCommandIndex] = useState<number>(0)
   const promptInput = useRef<HTMLInputElement>(null)
@@ -64,8 +75,8 @@ const PromptInput: FC = () => {
   }
 
   useEffect(() => {
-    if (promptInput.current) {
-      window.scrollTo(0, promptInput.current.offsetTop)
+    if (promptInput.current && containerRef.current) {
+      containerRef.current.scrollTo(0, promptInput.current.offsetTop)
       promptInput.current.focus()
     }
   }, [history])

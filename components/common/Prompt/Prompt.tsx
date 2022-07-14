@@ -1,13 +1,17 @@
-import { FC } from 'react'
+import { FC, RefObject } from 'react'
 import * as S from './Prompt.styled'
 import PromptInput from '../PromptInput'
 import PS1 from '../PS1'
 
-const Prompt: FC = () => {
+interface Props {
+  containerRef: RefObject<HTMLDivElement>
+}
+
+const Prompt: FC<Props> = ({ containerRef }) => {
   return (
     <S.Prompt>
       <PS1 />
-      <PromptInput />
+      <PromptInput containerRef={containerRef} />
     </S.Prompt>
   )
 }
