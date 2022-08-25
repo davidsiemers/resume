@@ -8,6 +8,7 @@ import {
 } from 'react'
 import * as S from './PromptInput.styled'
 import { useShell } from '../../ui/context'
+import * as commands from '../../../utils/commands/index'
 
 interface Props {
   containerRef: RefObject<HTMLDivElement>
@@ -70,6 +71,40 @@ const PromptInput: FC<Props> = ({ containerRef }) => {
       } else {
         setCommandIndex(0)
         setValue('')
+      }
+    }
+
+    if (
+      // Smelly OSX users
+      (e.metaKey && e.key === 'k') ||
+      // Smellier Windows/Linux Users
+      (e.ctrlKey && e.key === 'l')
+    ) {
+      e.preventDefault()
+      execute('clear')
+    }
+
+    /**
+     * TODO: Add the 'clear' command to tab completion
+     *
+     * Due to how the shell context state is handled, clear is not currently
+     * available to be tab completed as it is not a command defined
+     * in utls/commands/index
+     */
+    if (e.key === 'Tab') {
+      e.preventDefault()
+
+      let likelyCommands = [] as string[]
+
+      Object.keys(commands).forEach((command) => {
+        if (0 === command.indexOf(value)) {
+          likelyCommands.push(command)
+        }
+      })
+
+      // Only execute tab-completed command if a single result was found
+      if (likelyCommands.length === 1) {
+        setValue(likelyCommands[0])
       }
     }
   }
